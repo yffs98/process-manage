@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    楚凤沛
+    <button onclick='gologin()'>login</button>
+    <button onclick='test()'>but</button>
+    <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.js"></script>
+    <script>
+        //fetch 默认的是content-type:'text',要改成content-type:'application/json'; 就可以解决le  但是要转化成对象级字符串
+        // fetch('/test',{method:'post',headers:{'content-type':'application/json'},body:JSON.stringify({name:'test'})}).then(res=>res.json()).then(res=>console.log(res))
+        // fetch('/test',{method:'post',body:{name:'test'}}).then(res=>res.json()).then(res=>console.log(res))
+        // axios.post('/login',{user_name:'axios',user_pwd:123456}).then(res=>{
+        //     console.log(res.data)
+        // })
+        function gologin(){
+            console.log('时间久了，真的是啥都会忘呀！')
+        }
+        function test(){
+        //     axios.post('/login',{user_name:'axios',user_pwd:123456}).then(res=>{
+        //     console.log(res.data)
+        // })
+            fetch('/register',{
+                method:'post',
+                headers:{'content-type':'application/json'},
+                body:JSON.stringify({user_name:'163231000784',user_pwd:'W!tjr1'})}).
+                then(res=>res.json()).then(res=>console.log(res))
+        }
+    </script>
+</body>
+</html>

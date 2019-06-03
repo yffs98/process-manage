@@ -1,42 +1,11 @@
-const connection = require('./sql')
-function handleAsync(sql){
-    return new Promise((resolve,reject)=>{
-        connection.query(sql,(error,results,fields)=>{
-            if(error){
-                reject(error)
-            }else{
-                resolve(results)
-            }
-        })
-    })
-}
-const handleError=(promise)=> {
-    if (!promise || !Promise.prototype.isPrototypeOf(promise)) {
-        return new Promise((resolve, reject) => {
-            reject(new Error("requires promises as the param"));
-        }).catch(err => {
-            return [err, null];
-        })
-    }
-    return promise
-        .then(function () {
-            return [null, ...arguments]
-        })
-        .catch(err => {
-            return [err, null];
-        })
-}
-const handleSql=async (sql)=>{
+//将密码加密
+function cipher(payload,pwd='jack'){
+    const crypto = require('crypto');
+    const hmac = crypto.createHmac('sha256',pwd);
 
-    return handleError(handleAsync(sql))
+    hmac.update(payload);
+    return hmac.digest('hex')
 }
-const generateId = (prefix='',randomLength=9)=>{
-    return prefix+'_'+Number(Math.random().toString().substr(3,randomLength) + Date.now()).toString(36)
-}
-
 module.exports = {
-    handleAsync,
-    handleError,
-    handleSql,
-    generateId
+    cipher
 }
