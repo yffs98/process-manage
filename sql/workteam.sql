@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `projects`(
    `class_name` VARCHAR(10) NOT NULL default '1610A',
    `project_name` VARCHAR(100) NOT NULL UNIQUE,
    `project_description` VARCHAR(100) DEFAULT '',
-   `create_time` DATETIME default LOCALTIMESTAMP(),
+   `create_time` DATETIME default NULL,
    PRIMARY KEY ( `project_id` ),
    FOREIGN KEY (`cid`) REFERENCES classes(`cid`),
    UNIQUE KEY `cpd`(`cid`,`project_id`)
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `teams`(
    `project_id` varchar(50) NOT NULL,
    `team_name` VARCHAR(100) NOT NULL,
    `team_gitadress` VARCHAR(100) DEFAULT '' UNIQUE,
-   `create_time` DATETIME default LOCALTIMESTAMP(),
+   `create_time` DATETIME default NULL,
    PRIMARY KEY ( `id` ),
    FOREIGN KEY (`project_id`) REFERENCES projects(`project_id`),
    UNIQUE KEY `pid_tname`(`project_id`,`team_name`)

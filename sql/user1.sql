@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `teachers`(
    `tid` varchar(50) NOT NULL UNIQUE,
    `teacher_name` VARCHAR(30) NOT NULL UNIQUE,
    `teacher_pwd` VARCHAR(100) NOT NULL,
-   `create_time` DATETIME default LOCALTIMESTAMP(),
+   `create_time` DATETIME NULL,
    PRIMARY KEY ( `tid` )
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `classes`(
    `cid` varchar(50) NOT NULL UNIQUE,
    `class_name` VARCHAR(10) NOT NULL UNIQUE,
    `class_info` VARCHAR(255) default "",
-   `create_time` DATETIME default LOCALTIMESTAMP(),
+   `create_time` DATETIME default NULL,
    `tid` varchar(50) NOT NULL,
    PRIMARY KEY ( `cid` )
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `students`(
    `cid` varchar(50) default null,
    `role` tinyint(1) DEFAULT 2 comment '组长:1 组员:2',
    `gender` tinyint(1) DEFAULT 0 comment '1-男 2-女',
-   `create_time` DATETIME default LOCALTIMESTAMP(),
+   `create_time` DATETIME default NULL,
    PRIMARY KEY ( `sid` )
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
