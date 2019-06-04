@@ -1,7 +1,6 @@
 const router = require('koa-router')()
 // let userApi = require('../controller/user');//将分装出来的插件引入  { 'POST /register': [AsyncFunction: register] }
 
-
 const fs = require('fs');
 const path = require('path');
 
@@ -18,12 +17,7 @@ function addRoute(userApi){
     apis.forEach(item=>{
         // console.log(item)  item[0]是 'POST /register'  item[1]是自己定义的那个函数
         let [method,path] = item[0].split(' ')
-        if(method=='POST'){
-            router.post(path,item[1])
-        }
-        if(method=='GET'){
-            router.get(path,item[1])
-        }
+        router[method.toLowerCase()](path,item[1])
     })
 }
 

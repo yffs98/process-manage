@@ -3,7 +3,7 @@ let client = mysql.createConnection({
     host:'localhost',
     user:'root',
     password:'1314',
-    database:'three_data'
+    database:'project_process'
 })
 client.connect();//简单的几步希望铭记于心
 // console.log(client)

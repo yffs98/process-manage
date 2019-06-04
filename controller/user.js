@@ -2,18 +2,23 @@
 const jwt = require('jsonwebtoken')
 const uuid = require('uuid/v4')
 const utils = require('../utils')
+const captchas = require('../utils/captcha.js')
 const svgCaptcha = require('svg-captcha')
 let count = 0
 let sessionCache = {}
 //验证码
 let captcha = async (ctx)=>{
-   let {data,text} = svgCaptcha.create({
-        size:4,
-        ignoreChars:'0oli1',
-        noise:4,
-        background:'#cc9966'
-    })
+    let {data,text} = captchas.captchas()
+    //    let {data,text} = svgCaptcha.create({
+//         size:4,
+//         ignoreChars:'0oli1',
+//         noise:4,
+//         background:'#cc9966'
+//     })
+    
+console.log(text)    
     text = text.toLocaleLowerCase()
+
     sessionCache[text] = ++count; 
     ctx.body={
         code:1,
@@ -24,24 +29,34 @@ let captcha = async (ctx)=>{
 
 //注册
 let register = async ctx => {
-    let { user_name, user_pwd } = ctx.request.body;
+    let { user_name, user_pwd,phone='1008611',nickname='小白',gender='男',role='组员' } = ctx.request.body;
+    let data = new Date().toLocaleDateString()
     let cipheredPwd = utils.cipher(user_pwd);//将密码进行加密 
+    let genders= gender=='男'?1:2;
+    let roles = role=='组员'?2:1;
     let uid = uuid();
-        let [error,results] = await ctx.mysql(`insert into users ( user_name , user_pwd , mid ) values ('${user_name}','${cipheredPwd}','${uid}')`)
+        let [error,results] = await ctx.mysql(`insert into students ( user_name , user_pwd , sid ,phone,nickname,gender,role,create_time) values ('${user_name}','${cipheredPwd}','${uid}','${phone}','${nickname}','${genders}','${roles}','${data}')`)
+        // console.log(error,results)
         ctx.body = {
             code: error?0:1,
             results:error || results
         }
+    //判断组长是否已经存在
 }
 //登录
 let login = async ctx => {
     let { user_name, user_pwd, captcha ,count} = ctx.request.body;
-    // console.log(captcha)
+    // console.log(user_name,user_pwd ,count,captcha)
     let token = jwt.sign(user_name,'jack');//生成一个token
-    ctx.cookies.set('token', token);//将token存在cookies中
+    ctx.cookies.set('token', token,{
+        path:'/login',   //cookie写入的路径
+        httpOnly:true,
+        overwrite:false
+    });//将token存在cookies中
     let cipheredPwd = utils.cipher(user_pwd);//将密码进行加密 
     // console.log(sessionCache[captcha],count)
     //判断前端传过来的验证码是否正确
+    console.log(count,captcha)
     if(sessionCache[captcha] != count){
          ctx.response.body={
             code:0,
@@ -56,13 +71,12 @@ let login = async ctx => {
         }
         return
     }
-    let  [error,results]  = await ctx.mysql(`select * from users where user_name='${user_name}' and user_pwd='${cipheredPwd}'`)
-    console.log(results)
+    let  [error,results]  = await ctx.mysql(`select * from students where user_name='${user_name}' and user_pwd='${cipheredPwd}'`)
     if(results.length>0){
         ctx.response.body = {
             code: 1,
             token,
-            message: 'success'
+            message: results
         }
         return
     }else{
@@ -80,8 +94,9 @@ let login = async ctx => {
     //     message: 'post success'
     // }
 }
+
 module.exports = {
-    'POST /register': register,
-    'POST /login': login,
-    'GET /captcha': captcha
+    'POST /register': register,//注册
+    'POST /login': login,   //登录
+    'GET /captcha': captcha  //验证码
 }
